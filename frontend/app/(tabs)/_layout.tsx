@@ -40,6 +40,13 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: "Dashboard",
+          tabBarIcon: ({ color, focused }) => <TabIcon name="stats-chart-outline" color={color} focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
         name="pesanan"
         options={{
           title: "Pesanan",
@@ -65,13 +72,6 @@ export default function TabsLayout() {
         options={{
           title: "Customer",
           tabBarIcon: ({ color, focused }) => <TabIcon name="cart-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="dashboard"
-        options={{
-          title: "Dashboard",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="stats-chart-outline" color={color} focused={focused} />,
         }}
       />
       <Tabs.Screen

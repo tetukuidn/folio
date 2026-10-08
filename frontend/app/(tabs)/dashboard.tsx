@@ -3,6 +3,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-n
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Screen } from "@/src/components/screen";
 import { Button, Card, Chip } from "@/src/components/ui";
+import { ProfilCard } from "@/src/components/profil-card";
 import { useToast } from "@/src/components/toast";
 import { useStore } from "@/src/store";
 import { colors, radius, spacing } from "@/src/theme";
@@ -119,7 +120,7 @@ export default function DashboardScreen() {
 
   function resetSemua() {
     reset();
-    toast.show("Data demo direset");
+    toast.show("Semua data akun ini dihapus");
   }
 
   const options: { k: Periode; l: string }[] = [
@@ -133,6 +134,8 @@ export default function DashboardScreen() {
 
   return (
     <Screen title="Dashboard" subtitle="Ringkasan performa toko">
+      <ProfilCard />
+
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -257,7 +260,7 @@ export default function DashboardScreen() {
         )}
       </Card>
 
-      <Button title="Reset data demo" kind="out" icon="refresh-outline" onPress={resetSemua} testID="reset-demo" />
+      <Button title="Hapus semua data" kind="out" icon="trash-outline" onPress={resetSemua} testID="reset-demo" />
     </Screen>
   );
 }
