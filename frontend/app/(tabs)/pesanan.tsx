@@ -464,13 +464,20 @@ export default function PesananScreen() {
               {p.kurir} {p.layanan ? `· ${p.layanan}` : ""} · {p.berat || 0} kg
             </Text>
             <View style={{ flexDirection: "row", gap: spacing.md, marginTop: 8 }}>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={styles.muted}>Total transfer</Text>
-                <Text style={styles.money}>{formatRp(rek.totalTransfer)}</Text>
+                <Text style={styles.money} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{formatRp(rek.totalTransfer)}</Text>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={styles.muted}>Keuntungan</Text>
-                <Text style={[styles.money, rek.keuntungan < 0 && { color: colors.accent }]}>{formatRp(rek.keuntungan)}</Text>
+                <Text
+                  style={[styles.money, rek.keuntungan < 0 && { color: colors.accent }]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.7}
+                >
+                  {formatRp(rek.keuntungan)}
+                </Text>
               </View>
             </View>
             <View style={{ flexDirection: "row", gap: spacing.sm, marginTop: 10 }}>
@@ -483,7 +490,7 @@ export default function PesananScreen() {
                 />
               </View>
               <View style={{ flex: 1 }}>
-                <Button title="Chat WhatsApp" kind="out" icon="logo-whatsapp" onPress={() => chatWA(p.wa)} />
+                <Button title="Chat WA" kind="out" icon="logo-whatsapp" onPress={() => chatWA(p.wa)} />
               </View>
             </View>
             {open && (
@@ -575,13 +582,16 @@ function Rekapan({
 
 function RRow({ label, val, bold, danger }: { label: string; val: number; bold?: boolean; danger?: boolean }) {
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 3 }}>
-      <Text style={{ color: colors.onSurface, fontWeight: bold ? "700" : "400" }}>{label}</Text>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 3, gap: 8 }}>
+      <Text style={{ color: colors.onSurface, fontWeight: bold ? "700" : "400", flexShrink: 1 }} numberOfLines={1}>{label}</Text>
       <Text
         style={{
           color: danger ? colors.accent : colors.onSurface,
           fontWeight: bold ? "700" : "400",
         }}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
       >
         {formatRp(val)}
       </Text>

@@ -61,7 +61,7 @@ export function Button({
       ]}
     >
       {icon && <Ionicons name={icon} size={18} color={palette.fg} style={{ marginRight: 8 }} />}
-      <Text style={[styles.btnText, { color: palette.fg }]}>{title}</Text>
+      <Text style={[styles.btnText, { color: palette.fg }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{title}</Text>
     </Pressable>
   );
 }
@@ -90,7 +90,7 @@ export function Chip({
       testID={testID}
       style={[styles.chip, { backgroundColor: bg }, active && { borderWidth: 1.5, borderColor: fg }]}
     >
-      <Text style={{ color: fg, fontSize: 12, fontWeight: "600" }}>{label}</Text>
+      <Text style={{ color: fg, fontSize: 12, fontWeight: "600" }} numberOfLines={1}>{label}</Text>
     </Pressable>
   );
 }
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: radius.pill,
     alignSelf: "flex-start",
+    flexShrink: 0,
   },
   label: { fontSize: 13, fontWeight: "600", color: colors.onSurface, marginBottom: 6 },
   hint: { fontSize: 12, color: colors.muted, marginTop: 4 },

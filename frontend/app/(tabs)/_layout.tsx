@@ -10,7 +10,7 @@ function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMa
         <View
           style={{
             position: "absolute",
-            top: -8,
+            top: -10,
             width: 28,
             height: 3,
             borderRadius: 2,
@@ -18,7 +18,7 @@ function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMa
           }}
         />
       )}
-      <Ionicons name={name} size={22} color={color} />
+      <Ionicons name={name} size={26} color={color} />
     </View>
   );
 }
@@ -30,10 +30,11 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.brandPrimary,
         tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "600" },
+        tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: colors.surfaceSecondary,
           borderTopColor: colors.border,
+          height: 60,
         },
         tabBarItemStyle: { alignSelf: "center" },
       }}

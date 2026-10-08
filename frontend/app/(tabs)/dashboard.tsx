@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Screen } from "@/src/components/screen";
 import { Button, Card, Chip } from "@/src/components/ui";
@@ -133,7 +133,11 @@ export default function DashboardScreen() {
 
   return (
     <Screen title="Dashboard" subtitle="Ringkasan performa toko">
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 6, paddingVertical: 2 }}
+      >
         {options.map((o) => (
           <Chip
             key={o.k}
@@ -144,7 +148,7 @@ export default function DashboardScreen() {
             testID={`periode-${o.k}`}
           />
         ))}
-      </View>
+      </ScrollView>
 
       {periode === "range" && (
         <View style={{ flexDirection: "row", gap: spacing.sm }}>
@@ -179,12 +183,16 @@ export default function DashboardScreen() {
         </View>
       )}
 
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: spacing.sm, paddingVertical: 2 }}
+      >
         <Tile label="Keuntungan" val={formatRp(stats.untung)} danger={stats.untung < 0} />
-        <Tile label="Harga jual (omset)" val={formatRp(stats.omset)} />
+        <Tile label="Harga jual" val={formatRp(stats.omset)} />
         <Tile label="Total transfer" val={formatRp(stats.transfer)} />
         <Tile label="Margin" val={`${stats.margin.toFixed(1)}%`} />
-      </View>
+      </ScrollView>
 
       <Card>
         <Text style={styles.cardTitle}>Pesanan & barang keluar</Text>
@@ -257,17 +265,31 @@ export default function DashboardScreen() {
 function Tile({ label, val, danger }: { label: string; val: string; danger?: boolean }) {
   return (
     <View style={styles.tile}>
-      <Text style={styles.muted}>{label}</Text>
-      <Text style={[styles.tileVal, danger && { color: colors.accent }]}>{val}</Text>
+      <Text style={styles.muted} numberOfLines={1}>{label}</Text>
+      <Text
+        style={[styles.tileVal, danger && { color: colors.accent }]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+      >
+        {val}
+      </Text>
     </View>
   );
 }
 
 function Row({ k, v, danger }: { k: string; v: string; danger?: boolean }) {
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 4 }}>
-      <Text style={styles.muted}>{k}</Text>
-      <Text style={[{ color: colors.onSurface, fontWeight: "700" }, danger && { color: colors.accent }]}>{v}</Text>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 4, gap: 8 }}>
+      <Text style={[styles.muted, { flexShrink: 1 }]} numberOfLines={1}>{k}</Text>
+      <Text
+        style={[{ color: colors.onSurface, fontWeight: "700" }, danger && { color: colors.accent }]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {v}
+      </Text>
     </View>
   );
 }
@@ -276,14 +298,15 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface, marginBottom: 4 },
   muted: { color: colors.muted, fontSize: 13 },
   tile: {
-    width: "48%",
+    width: 150,
     backgroundColor: colors.surfaceSecondary,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.md,
+    flexShrink: 0,
   },
-  tileVal: { fontSize: 16, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
+  tileVal: { fontSize: 17, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
   dateBtn: {
     flex: 1,
     backgroundColor: colors.surfaceSecondary,

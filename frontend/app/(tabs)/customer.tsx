@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/src/components/screen";
 import { Card, Chip, Input } from "@/src/components/ui";
 import { useStore } from "@/src/store";
@@ -35,11 +35,15 @@ export default function CustomerScreen() {
   return (
     <Screen title="Customer" subtitle="Barang keluar per pesanan">
       <Input placeholder="Cari customer / jenis / kota" value={search} onChangeText={setSearch} testID="cust-search" />
-      <View style={{ flexDirection: "row", gap: spacing.sm }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: spacing.sm, paddingVertical: 2 }}
+      >
         <Tile label="Pohon keluar" val={String(totals.pohon)} />
         <Tile label="Total HPP" val={formatRp(totals.hpp)} />
         <Tile label="Keuntungan" val={formatRp(totals.untung)} danger={totals.untung < 0} />
-      </View>
+      </ScrollView>
 
       {filtered.length === 0 && (
         <Card>
@@ -79,17 +83,31 @@ export default function CustomerScreen() {
 function Tile({ label, val, danger }: { label: string; val: string; danger?: boolean }) {
   return (
     <View style={styles.tile}>
-      <Text style={styles.muted}>{label}</Text>
-      <Text style={[styles.tileVal, danger && { color: colors.accent }]}>{val}</Text>
+      <Text style={styles.muted} numberOfLines={1}>{label}</Text>
+      <Text
+        style={[styles.tileVal, danger && { color: colors.accent }]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+      >
+        {val}
+      </Text>
     </View>
   );
 }
 
 function Mini({ label, val, danger }: { label: string; val: string; danger?: boolean }) {
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={styles.muted}>{label}</Text>
-      <Text style={[styles.miniVal, danger && { color: colors.accent }]}>{val}</Text>
+    <View style={{ flex: 1, minWidth: 0 }}>
+      <Text style={styles.muted} numberOfLines={1}>{label}</Text>
+      <Text
+        style={[styles.miniVal, danger && { color: colors.accent }]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+      >
+        {val}
+      </Text>
     </View>
   );
 }
@@ -98,13 +116,14 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface },
   muted: { color: colors.muted, fontSize: 13 },
   tile: {
-    flex: 1,
+    width: 140,
     backgroundColor: colors.surfaceSecondary,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.md,
+    flexShrink: 0,
   },
-  tileVal: { fontSize: 15, fontWeight: "700", color: colors.onSurface, marginTop: 4 },
+  tileVal: { fontSize: 16, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
   miniVal: { fontSize: 14, fontWeight: "700", color: colors.onSurface, marginTop: 2 },
 });
