@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "../theme";
+import { colors, fonts, radius, spacing } from "../theme";
 
 type ToastCtx = { show: (msg: string) => void };
 const Ctx = createContext<ToastCtx | null>(null);
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 90,
+    bottom: 150,
     alignItems: "center",
   },
   bubble: {
@@ -56,5 +56,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     maxWidth: "88%",
   },
-  text: { color: colors.onSurfaceInverse, fontSize: 14, fontWeight: "600" },
+  text: { fontFamily: fonts.semibold, color: colors.onSurfaceInverse, fontSize: 14 },
 });

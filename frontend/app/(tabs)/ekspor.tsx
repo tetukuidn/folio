@@ -6,7 +6,7 @@ import { Screen } from "@/src/components/screen";
 import { Button, Card, Field, Input } from "@/src/components/ui";
 import { useToast } from "@/src/components/toast";
 import { useStore } from "@/src/store";
-import { colors, radius, spacing } from "@/src/theme";
+import { colors, fonts, fontSize, radius, spacing } from "@/src/theme";
 import { exportExcel, HEADERS, missingRequired, REQUIRED_IDX, rowFor, toTSV } from "@/src/utils/excel";
 import { formatTgl } from "@/src/utils/format";
 
@@ -108,7 +108,7 @@ export default function EksporScreen() {
               color={colors.brandPrimary}
             />
             <View style={{ flex: 1 }}>
-              <Text style={{ color: colors.onSurface, fontWeight: "700" }}>{p.nama}</Text>
+              <Text style={{ fontFamily: fonts.bold, color: colors.onSurface }}>{p.nama}</Text>
               <Text style={styles.muted}>
                 {formatTgl(p.tgl)} · {p.kurir} · {p.tipe}
               </Text>
@@ -167,10 +167,10 @@ export default function EksporScreen() {
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface },
-  muted: { color: colors.muted, fontSize: 13 },
-  link: { color: colors.brandPrimary, fontWeight: "700" },
-  warn: { color: colors.accent, fontWeight: "600", marginVertical: 6 },
+  cardTitle: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface },
+  muted: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.base - 1 },
+  link: { fontFamily: fonts.bold, color: colors.brandPrimary },
+  warn: { fontFamily: fonts.semibold, color: colors.accent, marginVertical: 6 },
   rowSel: {
     flexDirection: "row",
     alignItems: "center",
@@ -181,15 +181,15 @@ const styles = StyleSheet.create({
   },
   previewHead: {
     flexDirection: "row",
-    backgroundColor: colors.brandSecondary,
-    borderRadius: radius.sm,
-    paddingVertical: 6,
+    backgroundColor: colors.surfaceTertiary,
+    borderRadius: radius.md,
+    paddingVertical: 7,
     marginBottom: 4,
   },
   ph: {
+    fontFamily: fonts.bold,
     fontSize: 11,
-    fontWeight: "700",
-    color: colors.onBrandSecondary,
+    color: colors.onSurfaceTertiary,
     paddingHorizontal: 6,
   },
   previewRow: {
@@ -198,5 +198,5 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.divider,
     paddingVertical: 6,
   },
-  pc: { fontSize: 12, color: colors.onSurface, paddingHorizontal: 6 },
+  pc: { fontFamily: fonts.medium, fontSize: fontSize.sm, color: colors.onSurface, paddingHorizontal: 6 },
 });

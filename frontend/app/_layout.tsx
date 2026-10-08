@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter, useSegments } from "expo-router";
+import { useFonts } from "expo-font";
 import { ActivityIndicator, LogBox, StyleSheet, Text, View } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -18,7 +19,7 @@ function Splash() {
   return (
     <View style={styles.splash}>
       <ActivityIndicator size="large" color={colors.brandPrimary} />
-      <Text style={styles.splashText}>Memuat data…</Text>
+      <Text style={styles.splashText}>Memuat…</Text>
     </View>
   );
 }
@@ -36,10 +37,25 @@ function Gate() {
   }, [loading, user, segments, router]);
 
   if (loading) return <Splash />;
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }}>
+      <Stack.Screen name="pesanan-baru" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
+    </Stack>
+  );
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    "Outfit-Bold": require("../assets/fonts/Outfit-Bold.ttf"),
+    "Outfit-SemiBold": require("../assets/fonts/Outfit-SemiBold.ttf"),
+    "PlusJakartaSans-Regular": require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
+    "PlusJakartaSans-Medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
+    "PlusJakartaSans-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+    "PlusJakartaSans-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) return <Splash />;
+
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only regression on the UI redesign (folio). All 12 acceptance checks pass on mobile viewport 390x844 against EXPO_PUBLIC_BACKEND_URL. Login screen renders ONLY wordmark 'folio' + tagline + single CTA 'Masuk untuk mulai' (no extra paragraphs). Direct URL access to /pesanan and /supplier without token redirects to /login. Dashboard loads with floating pill bar containing exactly 5 tabs [tab-dashboard, tab-pesanan, tab-persediaan, tab-customer, tab-ekspor] + fab-pesanan-baru. tab-supplier is NOT present. Text label is shown ONLY on the active tab. Supplier card (buka-supplier) is on Dashboard, opens /supplier (full page with screen-back), adding a supplier persists after reload and the Dashboard counter updates. FAB opens full-page /pesanan-baru (input-nama, input-wa, input-alamat, input-kota, input-kec, picker-jenis, input-transfer, simpan-pesanan, batal-pesanan, screen-back). Create order from FAB persists after reload. Edit via ubah-pesanan-<id> prefills the form, saves transfer=999.000 and NO duplicate card is created (card count stays constant before/after). lihat-detail-<id> opens Penerima/Pesanan/Pengiriman/Rekapan with working 'Hapus pesanan'. Ekspor tab has unduh-excel + salin-tsv; Customer tab renders; Persediaan tab shows 'Sekarang' (FIFO) column. Dashboard profil-card edit + simpan-profil persist; logout-btn returns to login. Content is not occluded by the floating nav (reset-demo at y=1268 vs nav at y=780-824). Console has no 'key prop spread' or font errors; only non-blocking warnings 'props.pointerEvents is deprecated' (RN Web) and 'useNativeDriver is not supported' (web preview). Transient 'Unexpected text node: .' warnings seen once during an earlier mid-flow render (3 occurrences) but did not reproduce on the clean full run — flagged as minor.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "FloatingTabBar", "issue": "Uses prop `pointerEvents=\"box-none\"` which triggers React Native Web deprecation warning. Should migrate to style.pointerEvents. Reference: /app/frontend/src/components/tab-bar.tsx:40 and :57"}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_lpm_backend.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Low-priority: replace `pointerEvents=\"box-none\"` with `style={{ pointerEvents: 'box-none' }}` in /app/frontend/src/components/tab-bar.tsx to clear RN Web deprecation warning.",
+    "Low-priority: investigate transient 'Unexpected text node: .' warning (3 occurrences during persediaan flow in one run, did not reproduce). Likely a conditional render that returns a bare string/'.' inside a <View>. Candidates: Rekapan / profil-card / ui.tsx Field rendering empty strings between <View> children."
+  ],
+  "critical_code_review_comments": [
+    "app/_layout.tsx: Stack is declared with only one explicit <Stack.Screen> entry ('pesanan-baru' as modal). All other routes are auto-registered by expo-router. OK.",
+    "pesanan-baru.tsx: Edit mode uses `stokState = state without current pesanan` to recompute sisa stok correctly — good. simpan() replaces by id (no duplicate) and `router.back()` after save — matches tested behavior.",
+    "tab-bar.tsx: FAB uses router.push('/pesanan-baru'); _layout declares the route as modal presentation — tested working, back/batal both close via router.back().",
+    "login.tsx: Content layout uses `justifyContent: 'space-between'` so wordmark+tagline sit at top and CTA at bottom. Only one <Pressable> testID='login-google' — matches requirement of exactly one CTA with no extra copy."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "Reused QA session from iteration_1 (user_qa0000000001, token qa-token-123). No new seed required; token verified working via /api/auth/me.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Redesign verified end-to-end on 390x844: login (folio wordmark + tagline + 'Masuk untuk mulai'), redirect gate, floating pill tab bar (5 tabs active-label-only), center FAB → modal /pesanan-baru, Supplier moved to Dashboard shortcut (buka-supplier) + full-page /supplier, Pesanan create/edit (no duplicate on edit), detail/hapus, Ekspor/Customer/Persediaan, profil edit/logout. New testIDs in use: tab-{dashboard|pesanan|persediaan|customer|ekspor}, fab-pesanan-baru, screen-back, batal-pesanan, buka-supplier. Note: Picker.openness in /pesanan-baru briefly keeps overlays mounted; a safer selector pattern is to click an option by data-testid and wait >=400ms before next action.",
+  "rca_of_issue": "No bugs found. Minor non-blocking deprecation warnings only."
+}

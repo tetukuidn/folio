@@ -1,27 +1,27 @@
-// Design tokens for Laporan Aglonema (LPM). Light theme only.
+// Design tokens for folio — lembar pembukuan penjualan aglonema. Light theme only.
 import { useMemo } from "react";
-import { Appearance, StyleSheet, useColorScheme } from "react-native";
+import { Appearance, Platform, StyleSheet, useColorScheme } from "react-native";
 
 export type ColorScheme = "light" | "dark";
 
 const light = {
   // Surfaces
-  surface: "#F1F5F0", // bg
-  onSurface: "#17261F", // teks
-  surfaceSecondary: "#FFFFFF", // card
-  onSurfaceSecondary: "#17261F",
-  surfaceTertiary: "#F7FAF6", // input bg
-  onSurfaceTertiary: "#17261F",
-  surfaceInverse: "#17261F",
+  surface: "#F1F5F0",
+  onSurface: "#111A15",
+  surfaceSecondary: "#FFFFFF",
+  onSurfaceSecondary: "#111A15",
+  surfaceTertiary: "#E4EDE7",
+  onSurfaceTertiary: "#1F5A41",
+  surfaceInverse: "#1F5A41",
   onSurfaceInverse: "#FFFFFF",
-  muted: "#5C6B63", // teks redup
+  muted: "#6A7D73",
 
-  // Brand (hijau utama)
+  // Brand (hijau)
   brand: "#1F5A41",
   onBrand: "#FFFFFF",
   brandPrimary: "#1F5A41",
   onBrandPrimary: "#FFFFFF",
-  brandSecondary: "#E1EFE6", // hijau muda
+  brandSecondary: "#D5E3DB",
   onBrandSecondary: "#1F5A41",
   brandTertiary: "#F0F7F2",
   onBrandTertiary: "#1F5A41",
@@ -33,19 +33,19 @@ const light = {
   onAccentMuted: "#C42F5C",
 
   // Status
-  success: "#1F5A41",
+  success: "#287D56",
   onSuccess: "#FFFFFF",
-  warning: "#B45309",
-  onWarning: "#FFFFFF",
-  error: "#C42F5C",
+  warning: "#E89B17",
+  onWarning: "#111A15",
+  error: "#D93847",
   onError: "#FFFFFF",
-  info: "#1D4ED8",
+  info: "#20688A",
   onInfo: "#FFFFFF",
 
   // Lines
-  border: "#DCE4DE",
-  borderStrong: "#B8C6BC",
-  divider: "#DCE4DE",
+  border: "#D5E3DB",
+  borderStrong: "#A6C2B3",
+  divider: "#E2EBE5",
 };
 
 export type ThemeColors = typeof light;
@@ -75,5 +75,43 @@ export function makeStyles<T extends StyleSheet.NamedStyles<T> | StyleSheet.Name
 
 export const colors = light;
 
-export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
-export const radius = { sm: 8, md: 12, lg: 14, xl: 20, pill: 999 };
+export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48 };
+export const radius = { sm: 6, md: 12, lg: 20, xl: 28, pill: 999 };
+
+// Soft sage gradient used as the app background
+export const bgGradient = ["#E6F0E8", "#F1F5F0", "#DCEAE1"] as const;
+
+// Typography (loaded in app/_layout.tsx via expo-font)
+export const fonts = {
+  display: "Outfit-Bold",
+  displaySemi: "Outfit-SemiBold",
+  body: "PlusJakartaSans-Regular",
+  medium: "PlusJakartaSans-Medium",
+  semibold: "PlusJakartaSans-SemiBold",
+  bold: "PlusJakartaSans-Bold",
+};
+
+export const fontSize = { sm: 12, base: 14, lg: 16, xl: 20, xxl: 24, xxxl: 32, display: 44 };
+
+export const shadow = {
+  card: Platform.select({
+    ios: { shadowColor: "#1F5A41", shadowOpacity: 0.07, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+    android: { elevation: 2 },
+    default: { boxShadow: "0 6px 18px rgba(31,90,65,0.08)" },
+  }) as object,
+  float: Platform.select({
+    ios: { shadowColor: "#0B1F16", shadowOpacity: 0.22, shadowRadius: 20, shadowOffset: { width: 0, height: 10 } },
+    android: { elevation: 12 },
+    default: { boxShadow: "0 10px 26px rgba(11,31,22,0.25)" },
+  }) as object,
+};
+
+// Floating pill navigation geometry
+export const nav = {
+  barHeight: 64,
+  sideInset: 16,
+  bottomGap: 10,
+  fabSize: 60,
+  fabLift: 22, // how much the FAB rises above the pill's top edge
+  contentBottomPad: 132,
+};

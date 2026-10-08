@@ -1,86 +1,17 @@
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { View } from "react-native";
-import { colors } from "@/src/theme";
-
-function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMap; color: string; focused: boolean }) {
-  return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
-      {focused && (
-        <View
-          style={{
-            position: "absolute",
-            top: -10,
-            width: 28,
-            height: 3,
-            borderRadius: 2,
-            backgroundColor: colors.accent,
-          }}
-        />
-      )}
-      <Ionicons name={name} size={26} color={color} />
-    </View>
-  );
-}
+import { FloatingTabBar } from "@/src/components/tab-bar";
 
 export default function TabsLayout() {
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.brandPrimary,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          backgroundColor: colors.surfaceSecondary,
-          borderTopColor: colors.border,
-          height: 60,
-        },
-        tabBarItemStyle: { alignSelf: "center" },
-      }}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "transparent" } }}
+      tabBar={(props) => <FloatingTabBar {...props} />}
     >
-      <Tabs.Screen
-        name="dashboard"
-        options={{
-          title: "Dashboard",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="stats-chart-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="pesanan"
-        options={{
-          title: "Pesanan",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="receipt-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="supplier"
-        options={{
-          title: "Supplier",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="people-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="persediaan"
-        options={{
-          title: "Persediaan",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="leaf-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="customer"
-        options={{
-          title: "Customer",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="cart-outline" color={color} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="ekspor"
-        options={{
-          title: "Ekspor",
-          tabBarIcon: ({ color, focused }) => <TabIcon name="cloud-upload-outline" color={color} focused={focused} />,
-        }}
-      />
+      <Tabs.Screen name="dashboard" options={{ title: "Dashboard" }} />
+      <Tabs.Screen name="pesanan" options={{ title: "Pesanan" }} />
+      <Tabs.Screen name="persediaan" options={{ title: "Persediaan" }} />
+      <Tabs.Screen name="customer" options={{ title: "Customer" }} />
+      <Tabs.Screen name="ekspor" options={{ title: "Ekspor" }} />
     </Tabs>
   );
 }

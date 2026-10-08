@@ -6,7 +6,7 @@ import { Button, Card, Field, Input } from "./ui";
 import { useToast } from "./toast";
 import { useAuth } from "../auth";
 import { useStore } from "../store";
-import { colors, radius, spacing } from "../theme";
+import { colors, fonts, fontSize, radius, spacing } from "../theme";
 
 export function ProfilCard() {
   const { user, signOut } = useAuth();
@@ -121,10 +121,10 @@ export function ProfilCard() {
 
 const styles = StyleSheet.create({
   head: { flexDirection: "row", alignItems: "center", gap: spacing.md },
-  avatar: { width: 52, height: 52, borderRadius: radius.pill, backgroundColor: colors.surfaceTertiary },
+  avatar: { width: 54, height: 54, borderRadius: radius.pill, backgroundColor: colors.surfaceTertiary },
   avatarFallback: { backgroundColor: colors.brandPrimary, alignItems: "center", justifyContent: "center" },
-  nama: { fontSize: 16, fontWeight: "800", color: colors.onSurface },
-  email: { fontSize: 12, color: colors.muted, marginTop: 1 },
+  nama: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface },
+  email: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.muted, marginTop: 1 },
   syncRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: spacing.sm },
-  syncText: { fontSize: 12, color: colors.muted },
+  syncText: { fontFamily: fonts.medium, fontSize: fontSize.sm, color: colors.muted },
 });

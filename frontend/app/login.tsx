@@ -1,75 +1,96 @@
-import React from "react";
-import { ActivityIndicator, Platform, StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button, Card } from "@/src/components/ui";
 import { useAuth } from "@/src/auth";
-import { colors, radius, spacing } from "@/src/theme";
+import { useToast } from "@/src/components/toast";
+import { colors, fonts, fontSize, radius, shadow, spacing } from "@/src/theme";
+
+const BG =
+  "https://images.unsplash.com/photo-1629099534513-bbc256e2b58a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzV8MHwxfHNlYXJjaHwxfHxBZ2xhb25lbWElMjBwbGFudCUyMGFlc3RoZXRpY3xlbnwwfHx8fDE3OTE0MzMxODN8MA&ixlib=rb-4.1.0&q=85";
 
 export default function LoginScreen() {
   const { signIn, signingIn, error } = useAuth();
   const insets = useSafeAreaInsets();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (error) toast.show(error);
+  }, [error, toast]);
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top + spacing.xl, paddingBottom: insets.bottom + spacing.xl }]}>
-      <View style={styles.logoWrap}>
-        <View style={styles.logo}>
-          <Ionicons name="leaf" size={40} color={colors.onBrandPrimary} />
+    <View style={styles.root}>
+      <Image source={{ uri: BG }} style={StyleSheet.absoluteFill} contentFit="cover" transition={400} />
+      <LinearGradient
+        colors={["rgba(11,31,22,0.35)", "rgba(11,31,22,0.55)", "rgba(11,31,22,0.92)"]}
+        locations={[0, 0.45, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+
+      <View style={[styles.content, { paddingTop: insets.top + spacing.xxxl, paddingBottom: insets.bottom + spacing.xl }]}>
+        <View>
+          <Text style={styles.wordmark}>folio</Text>
+          <Text style={styles.tagline}>lembar pembukuan penjualan aglonema</Text>
         </View>
-        <Text style={styles.brand}>LPM</Text>
-        <Text style={styles.tagline}>Laporan penjualan aglonema</Text>
+
+        <Pressable
+          onPress={signingIn ? undefined : signIn}
+          disabled={signingIn}
+          style={({ pressed }) => [styles.ctaShadow, pressed && { transform: [{ scale: 0.98 }] }]}
+          testID="login-google"
+        >
+          <BlurView intensity={40} tint="light" style={styles.cta}>
+            {signingIn ? (
+              <ActivityIndicator color={colors.surfaceSecondary} />
+            ) : (
+              <>
+                <Ionicons name="logo-google" size={20} color={colors.surfaceSecondary} />
+                <Text style={styles.ctaText}>Masuk untuk mulai</Text>
+                <Ionicons name="arrow-forward" size={20} color={colors.surfaceSecondary} />
+              </>
+            )}
+          </BlurView>
+        </Pressable>
       </View>
-
-      <Card style={styles.card}>
-        <Text style={styles.cardTitle}>Masuk untuk mulai</Text>
-        <Text style={styles.cardBody}>
-          Data toko Anda tersimpan online dan terpisah per akun Google. Masuk dengan akun yang sama di HP mana pun
-          untuk melihat data yang sama.
-        </Text>
-        <View style={{ height: spacing.lg }} />
-        {signingIn ? (
-          <View style={styles.loadingRow}>
-            <ActivityIndicator color={colors.brandPrimary} />
-            <Text style={styles.loadingText}>Menghubungkan ke Google…</Text>
-          </View>
-        ) : (
-          <Button title="Masuk dengan Google" icon="logo-google" onPress={signIn} testID="login-google" />
-        )}
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-      </Card>
-
-      <Text style={styles.footer}>
-        {Platform.OS === "web" ? "Anda akan diarahkan ke halaman Google." : "Jendela Google akan terbuka sebentar."}
-      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  root: { flex: 1, backgroundColor: "#0B1F16" },
+  content: {
     flex: 1,
-    backgroundColor: colors.surface,
-    paddingHorizontal: spacing.lg,
-    justifyContent: "center",
-    gap: spacing.xl,
+    paddingHorizontal: spacing.xl,
+    justifyContent: "space-between",
   },
-  logoWrap: { alignItems: "center", gap: spacing.sm },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: radius.xl,
-    backgroundColor: colors.brandPrimary,
+  wordmark: {
+    fontFamily: fonts.display,
+    fontSize: fontSize.display + 16,
+    color: colors.surfaceSecondary,
+    letterSpacing: -2,
+  },
+  tagline: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.base,
+    color: "rgba(255,255,255,0.78)",
+    marginTop: spacing.xs,
+  },
+  ctaShadow: { ...shadow.float, borderRadius: radius.pill },
+  cta: {
+    minHeight: 62,
+    borderRadius: radius.pill,
+    overflow: "hidden",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: spacing.md,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
+    backgroundColor: "rgba(255,255,255,0.14)",
   },
-  brand: { fontSize: 30, fontWeight: "800", color: colors.onSurface, letterSpacing: 2 },
-  tagline: { fontSize: 14, color: colors.muted },
-  card: { gap: 2 },
-  cardTitle: { fontSize: 17, fontWeight: "800", color: colors.onSurface, marginBottom: 6 },
-  cardBody: { fontSize: 13, color: colors.muted, lineHeight: 19 },
-  loadingRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, minHeight: 48 },
-  loadingText: { color: colors.onSurface, fontWeight: "600" },
-  error: { color: colors.accent, fontWeight: "600", marginTop: spacing.md, fontSize: 13 },
-  footer: { textAlign: "center", color: colors.muted, fontSize: 12 },
+  ctaText: { fontFamily: fonts.bold, fontSize: fontSize.lg + 1, color: colors.surfaceSecondary },
 });

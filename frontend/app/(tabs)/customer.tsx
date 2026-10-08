@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Screen } from "@/src/components/screen";
 import { Card, Chip, Input } from "@/src/components/ui";
 import { useStore } from "@/src/store";
-import { colors, spacing } from "@/src/theme";
+import { colors, fonts, fontSize, radius, spacing } from "@/src/theme";
 import { formatRp, formatTgl } from "@/src/utils/format";
 import { hitungRekap, totalItemJml } from "@/src/utils/calc";
 
@@ -113,17 +113,17 @@ function Mini({ label, val, danger }: { label: string; val: string; danger?: boo
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface },
-  muted: { color: colors.muted, fontSize: 13 },
+  cardTitle: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface },
+  muted: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.base - 1 },
   tile: {
-    width: 140,
+    width: 148,
     backgroundColor: colors.surfaceSecondary,
-    borderRadius: 14,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    padding: spacing.md,
+    padding: spacing.lg,
     flexShrink: 0,
   },
-  tileVal: { fontSize: 16, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
-  miniVal: { fontSize: 14, fontWeight: "700", color: colors.onSurface, marginTop: 2 },
+  tileVal: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface, marginTop: 4 },
+  miniVal: { fontFamily: fonts.bold, fontSize: fontSize.base, color: colors.onSurface, marginTop: 2 },
 });

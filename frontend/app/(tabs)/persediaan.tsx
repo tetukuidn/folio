@@ -6,7 +6,7 @@ import { Button, Card, Field, Input, Picker } from "@/src/components/ui";
 import { useToast } from "@/src/components/toast";
 import { useStore } from "@/src/store";
 import type { Belanja } from "@/src/store/types";
-import { colors, radius, spacing } from "@/src/theme";
+import { colors, fonts, fontSize, radius, spacing } from "@/src/theme";
 import { formatRp, todayISO, uid } from "@/src/utils/format";
 import { jenisList, stokFIFO } from "@/src/utils/calc";
 
@@ -197,14 +197,14 @@ export default function PersediaanScreen() {
             })}
             {filtered.length > 0 && (
               <View style={[styles.tr, styles.ttotal]}>
-                <Text style={[styles.td, styles.cJenis, { fontWeight: "700" }]}>Total</Text>
+                <Text style={[styles.td, styles.cJenis, styles.tdBold]}>Total</Text>
                 <Text style={[styles.td, styles.cSupplier]} />
                 <Text style={[styles.td, styles.cHPP]} />
                 <Text style={[styles.td, styles["cHarga jual"]]} />
-                <Text style={[styles.td, styles.cJml, { fontWeight: "700" }]}>{totalRow.jml}</Text>
-                <Text style={[styles.td, styles.cAwal, { fontWeight: "700" }]}>{totalRow.awal}</Text>
-                <Text style={[styles.td, styles.cSekarang, { fontWeight: "700" }]}>{totalRow.now}</Text>
-                <Text style={[styles.td, styles["cTotal HPP"], { fontWeight: "700" }]}>{formatRp(totalRow.hpp)}</Text>
+                <Text style={[styles.td, styles.cJml, styles.tdBold]}>{totalRow.jml}</Text>
+                <Text style={[styles.td, styles.cAwal, styles.tdBold]}>{totalRow.awal}</Text>
+                <Text style={[styles.td, styles.cSekarang, styles.tdBold]}>{totalRow.now}</Text>
+                <Text style={[styles.td, styles["cTotal HPP"], styles.tdBold]}>{formatRp(totalRow.hpp)}</Text>
                 <View style={styles.c__} />
               </View>
             )}
@@ -228,14 +228,15 @@ const COL = {
 };
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface },
-  muted: { color: colors.muted, fontSize: 13 },
-  hint: { fontSize: 12, marginTop: 4 },
-  tr: { flexDirection: "row", alignItems: "center", paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: colors.divider },
-  thead: { backgroundColor: colors.brandSecondary, borderRadius: radius.sm, paddingHorizontal: 4 },
-  th: { fontWeight: "700", color: colors.onBrandSecondary, fontSize: 12, paddingHorizontal: 4 },
-  td: { color: colors.onSurface, fontSize: 13, paddingHorizontal: 4 },
-  ttotal: { backgroundColor: colors.surfaceTertiary },
+  cardTitle: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface },
+  muted: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.base - 1 },
+  hint: { fontFamily: fonts.medium, fontSize: fontSize.sm, marginTop: 4 },
+  tr: { flexDirection: "row", alignItems: "center", paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: colors.divider },
+  thead: { backgroundColor: colors.surfaceTertiary, borderRadius: radius.md, paddingHorizontal: 4 },
+  th: { fontFamily: fonts.bold, color: colors.onSurfaceTertiary, fontSize: fontSize.sm, paddingHorizontal: 4 },
+  td: { fontFamily: fonts.medium, color: colors.onSurface, fontSize: fontSize.base - 1, paddingHorizontal: 4 },
+  tdBold: { fontFamily: fonts.bold },
+  ttotal: { backgroundColor: colors.brandTertiary },
   cJenis: { width: COL.cJenis },
   cSupplier: { width: COL.cSupplier },
   cHPP: { width: COL.cHPP },

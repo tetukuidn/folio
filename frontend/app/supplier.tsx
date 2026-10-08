@@ -1,18 +1,20 @@
 import React, { useMemo, useState } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Screen } from "@/src/components/screen";
 import { Button, Card, Field, Input } from "@/src/components/ui";
 import { useToast } from "@/src/components/toast";
 import { useStore } from "@/src/store";
 import type { Supplier } from "@/src/store/types";
-import { colors, spacing } from "@/src/theme";
+import { colors, fonts, spacing } from "@/src/theme";
 import { formatRp, uid } from "@/src/utils/format";
 import { displayWA, normalizeWA } from "@/src/utils/phone";
 
 export default function SupplierScreen() {
   const { state, setState } = useStore();
   const toast = useToast();
+  const router = useRouter();
   const [nama, setNama] = useState("");
   const [hp, setHp] = useState("");
   const [cat, setCat] = useState("");
@@ -52,7 +54,7 @@ export default function SupplierScreen() {
   }
 
   return (
-    <Screen title="Supplier" subtitle="Daftar supplier aglonema">
+    <Screen title="Supplier" subtitle="Daftar supplier aglonema" onBack={() => router.back()} floatingNav={false}>
       <Card>
         <Text style={styles.cardTitle}>Tambah supplier</Text>
         <View style={{ height: spacing.sm }} />
@@ -101,7 +103,7 @@ export default function SupplierScreen() {
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface },
-  muted: { color: colors.muted, fontSize: 13 },
-  link: { color: colors.brandPrimary, fontWeight: "700", marginTop: 4 },
+  cardTitle: { fontFamily: fonts.bold, fontSize: 16, color: colors.onSurface },
+  muted: { fontFamily: fonts.body, color: colors.muted, fontSize: 13 },
+  link: { fontFamily: fonts.semibold, color: colors.brandPrimary, marginTop: 4 },
 });

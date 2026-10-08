@@ -11,7 +11,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, radius, spacing } from "../theme";
+import { colors, fonts, fontSize, radius, shadow, spacing } from "../theme";
 
 /* ---------------- Card ---------------- */
 export function Card({ children, style, testID }: { children: React.ReactNode; style?: ViewStyle | ViewStyle[]; testID?: string }) {
@@ -90,7 +90,7 @@ export function Chip({
       testID={testID}
       style={[styles.chip, { backgroundColor: bg }, active && { borderWidth: 1.5, borderColor: fg }]}
     >
-      <Text style={{ color: fg, fontSize: 12, fontWeight: "600" }} numberOfLines={1}>{label}</Text>
+      <Text style={{ fontFamily: fonts.semibold, color: fg, fontSize: fontSize.sm }} numberOfLines={1}>{label}</Text>
     </Pressable>
   );
 }
@@ -219,52 +219,53 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.lg,
+    ...shadow.card,
   },
   btn: {
-    minHeight: 48,
-    borderRadius: radius.md,
+    minHeight: 52,
+    borderRadius: radius.pill,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
     paddingHorizontal: spacing.lg,
   },
-  btnText: { fontSize: 15, fontWeight: "700" },
+  btnText: { fontFamily: fonts.bold, fontSize: fontSize.lg - 1 },
   chip: {
     paddingHorizontal: spacing.md,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderRadius: radius.pill,
     alignSelf: "flex-start",
     flexShrink: 0,
   },
-  label: { fontSize: 13, fontWeight: "600", color: colors.onSurface, marginBottom: 6 },
-  hint: { fontSize: 12, color: colors.muted, marginTop: 4 },
+  label: { fontFamily: fonts.semibold, fontSize: fontSize.base - 1, color: colors.onSurface, marginBottom: 6 },
+  hint: { fontFamily: fonts.body, fontSize: fontSize.sm, color: colors.muted, marginTop: 4 },
   inputWrap: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.surfaceTertiary,
+    backgroundColor: colors.brandTertiary,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.md + 2,
     paddingHorizontal: spacing.md,
   },
-  prefix: { color: colors.muted, fontSize: 16, marginRight: 6 },
-  input: { flex: 1, fontSize: 16, color: colors.onSurface, paddingVertical: 12 },
+  prefix: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.lg, marginRight: 6 },
+  input: { flex: 1, fontFamily: fonts.medium, fontSize: fontSize.lg, color: colors.onSurface, paddingVertical: 13 },
   pickerBtn: {
-    minHeight: 48,
-    backgroundColor: colors.surfaceTertiary,
+    minHeight: 50,
+    backgroundColor: colors.brandTertiary,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.md + 2,
     paddingHorizontal: spacing.md,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pickerText: { color: colors.onSurface, fontSize: 16, flex: 1 },
+  pickerText: { fontFamily: fonts.medium, color: colors.onSurface, fontSize: fontSize.lg, flex: 1 },
   modalBg: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(11,31,22,0.45)",
     justifyContent: "center",
     paddingHorizontal: spacing.lg,
   },
@@ -273,27 +274,27 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.lg,
   },
-  modalTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface, marginBottom: spacing.md },
+  modalTitle: { fontFamily: fonts.display, fontSize: fontSize.xl, color: colors.onSurface, marginBottom: spacing.md },
   pickerItem: {
-    paddingVertical: 12,
+    paddingVertical: 13,
     paddingHorizontal: spacing.sm,
-    borderRadius: radius.sm,
+    borderRadius: radius.md,
   },
-  pickerItemText: { fontSize: 15, color: colors.onSurface },
+  pickerItemText: { fontFamily: fonts.medium, fontSize: fontSize.lg - 1, color: colors.onSurface },
   sectionTitleWrap: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: spacing.md,
   },
   sectionBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 26,
+    height: 26,
+    borderRadius: radius.pill,
     backgroundColor: colors.brandPrimary,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 8,
   },
-  sectionBadgeText: { color: colors.onBrandPrimary, fontSize: 12, fontWeight: "700" },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: colors.onSurface },
+  sectionBadgeText: { fontFamily: fonts.bold, color: colors.onBrandPrimary, fontSize: fontSize.sm },
+  sectionTitle: { fontFamily: fonts.display, fontSize: fontSize.lg + 1, color: colors.onSurface },
 });

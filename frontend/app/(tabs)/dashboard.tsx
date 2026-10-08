@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Screen } from "@/src/components/screen";
 import { Button, Card, Chip } from "@/src/components/ui";
 import { ProfilCard } from "@/src/components/profil-card";
 import { useToast } from "@/src/components/toast";
 import { useStore } from "@/src/store";
-import { colors, radius, spacing } from "@/src/theme";
+import { colors, fonts, fontSize, radius, spacing } from "@/src/theme";
 import { formatRp, formatTgl } from "@/src/utils/format";
 import { hitungRekap, hppJenis, jenisList, sisaStok, stokFIFO, stokMasuk } from "@/src/utils/calc";
 
@@ -15,6 +17,7 @@ type Periode = "all" | "7" | "1m" | "3m" | "6m" | "range";
 export default function DashboardScreen() {
   const { state, reset } = useStore();
   const toast = useToast();
+  const router = useRouter();
   const [periode, setPeriode] = useState<Periode>("all");
   const [dari, setDari] = useState<Date>(() => {
     const d = new Date();
@@ -136,6 +139,21 @@ export default function DashboardScreen() {
     <Screen title="Dashboard" subtitle="Ringkasan performa toko">
       <ProfilCard />
 
+      <Pressable onPress={() => router.push("/supplier")} testID="buka-supplier">
+        <Card style={styles.shortcut}>
+          <View style={styles.shortcutIcon}>
+            <Ionicons name="people-outline" size={22} color={colors.brandPrimary} />
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={styles.shortcutTitle}>Supplier</Text>
+            <Text style={styles.muted} numberOfLines={1}>
+              {state.suppliers.length} supplier tersimpan
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.muted} />
+        </Card>
+      </Pressable>
+
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -237,7 +255,7 @@ export default function DashboardScreen() {
             {terlaris.map((t) => (
               <View key={t.j}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                  <Text style={{ color: colors.onSurface }}>{t.j}</Text>
+                  <Text style={styles.jenisName}>{t.j}</Text>
                   <Text style={styles.muted}>{t.n}</Text>
                 </View>
                 <View style={styles.barBg}>
@@ -283,10 +301,10 @@ function Tile({ label, val, danger }: { label: string; val: string; danger?: boo
 
 function Row({ k, v, danger }: { k: string; v: string; danger?: boolean }) {
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 4, gap: 8 }}>
-      <Text style={[styles.muted, { flexShrink: 1 }]} numberOfLines={1}>{k}</Text>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 5, gap: 8 }}>
+      <Text style={styles.rowKey} numberOfLines={1}>{k}</Text>
       <Text
-        style={[{ color: colors.onSurface, fontWeight: "700" }, danger && { color: colors.accent }]}
+        style={[styles.rowVal, danger && { color: colors.accent }]}
         numberOfLines={1}
         adjustsFontSizeToFit
         minimumFontScale={0.8}
@@ -298,34 +316,47 @@ function Row({ k, v, danger }: { k: string; v: string; danger?: boolean }) {
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: "700", color: colors.onSurface, marginBottom: 4 },
-  muted: { color: colors.muted, fontSize: 13 },
+  cardTitle: { fontFamily: fonts.display, fontSize: fontSize.xl - 2, color: colors.onSurface, marginBottom: 6 },
+  muted: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.base - 1 },
+  shortcut: { flexDirection: "row", alignItems: "center", gap: spacing.md },
+  shortcutIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surfaceTertiary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shortcutTitle: { fontFamily: fonts.display, fontSize: fontSize.lg + 2, color: colors.onSurface },
   tile: {
-    width: 150,
+    width: 152,
     backgroundColor: colors.surfaceSecondary,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    padding: spacing.md,
+    padding: spacing.lg,
     flexShrink: 0,
   },
-  tileVal: { fontSize: 17, fontWeight: "800", color: colors.onSurface, marginTop: 4 },
+  tileVal: { fontFamily: fonts.display, fontSize: fontSize.xl, color: colors.onSurface, marginTop: 4 },
   dateBtn: {
     flex: 1,
     backgroundColor: colors.surfaceSecondary,
-    borderRadius: radius.md,
+    borderRadius: radius.md + 2,
     padding: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  dateLbl: { color: colors.muted, fontSize: 12 },
-  dateVal: { color: colors.onSurface, fontWeight: "700", marginTop: 2 },
+  dateLbl: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.sm },
+  dateVal: { fontFamily: fonts.bold, color: colors.onSurface, marginTop: 2, fontSize: fontSize.base },
   barBg: {
-    height: 8,
-    backgroundColor: colors.accentMuted,
-    borderRadius: 4,
+    height: 10,
+    backgroundColor: colors.surfaceTertiary,
+    borderRadius: radius.pill,
     overflow: "hidden",
     marginTop: 4,
   },
-  barFill: { height: 8, backgroundColor: colors.accent },
+  barFill: { height: 10, backgroundColor: colors.brandPrimary, borderRadius: radius.pill },
+  rowKey: { fontFamily: fonts.body, color: colors.muted, fontSize: fontSize.base - 1, flexShrink: 1 },
+  rowVal: { fontFamily: fonts.bold, color: colors.onSurface, fontSize: fontSize.base },
+  jenisName: { fontFamily: fonts.medium, color: colors.onSurface, fontSize: fontSize.base },
 });
