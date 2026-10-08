@@ -26,6 +26,7 @@ Aplikasi mobile iOS/Android untuk pencatatan penjualan tanaman aglonema (1 toko,
 - Format Everpro: Jenis Pengiriman otomatis (COD prefix, J&T Express DROPOFF→PICKUP), No Referensi `ORD-<5digit>`
 - Sel wajib kosong ditandai pink, maksimum 100 pesanan/file, unduh via Share Sheet
 - Seed demo lengkap (5 jenis belanja + 2 pesanan + sender), tombol Reset
+- Edit pesanan: tombol "Ubah pesanan" di detail card → form terisi otomatis (mode ubah dengan banner), stok pesanan tsb dikembalikan sementara agar sisa stok benar, simpan menimpa data lama (id & status dipertahankan), ada tombol Batal
 
 ## Tema
 Light-only sesuai pilihan user (bg #F1F5F0, hijau #1F5A41, pink aksen #C42F5C).

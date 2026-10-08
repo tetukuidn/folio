@@ -34,6 +34,26 @@ type Form = {
   berat: string;
 };
 
+const formFromPesanan = (p: Pesanan): Form => ({
+  nama: p.nama,
+  wa: p.wa,
+  alamat: p.alamat,
+  kota: p.kota,
+  kec: p.kec,
+  kodepos: p.kodepos ?? "",
+  tgl: p.tgl,
+  paket: !!p.paket,
+  items: p.items.map((it) => ({ ...it })),
+  ongkir: p.ongkir ? String(p.ongkir) : "",
+  karantina: p.karantina ? String(p.karantina) : "",
+  ops: p.ops ? String(p.ops) : "",
+  transfer: p.transfer ? String(p.transfer) : "",
+  codOngkir: !!p.codOngkir,
+  kurir: p.kurir || KURIR_NAMES[0],
+  layanan: p.layanan || layananFor(p.kurir || KURIR_NAMES[0])[0],
+  berat: p.berat ? String(p.berat) : "",
+});
+
 const emptyForm = (): Form => ({
   nama: "",
   wa: "",
@@ -62,6 +82,13 @@ export default function PesananScreen() {
   const [form, setForm] = useState<Form>(emptyForm());
   const [showPenerima, setShowPenerima] = useState(false);
   const [openDetail, setOpenDetail] = useState<Record<string, boolean>>({});
+  const [editId, setEditId] = useState<string | null>(null);
+
+  // Saat mengubah pesanan, stok pesanan tsb dikembalikan dulu agar sisa stok benar.
+  const stokState = useMemo(
+    () => (editId ? { ...state, pesanan: state.pesanan.filter((p) => p.id !== editId) } : state),
+    [state, editId]
+  );
 
   const allJenis = useMemo(() => jenisList(state), [state]);
 
@@ -74,7 +101,7 @@ export default function PesananScreen() {
   const omset = transferN - karN - og;
   const keuntunganForm = omset - totalHppForm - opsN;
 
-  const overStok = form.items.some((it) => it.jml > sisaStok(state, it.jenis));
+  const overStok = form.items.some((it) => it.jml > sisaStok(stokState, it.jenis));
 
   function patchForm(p: Partial<Form>) {
     setForm((f) => ({ ...f, ...p }));
@@ -82,7 +109,7 @@ export default function PesananScreen() {
 
   function addJenisToKeranjang(jenis: string) {
     if (form.items.find((i) => i.jenis === jenis)) return;
-    const hpp = hppJenis(state, jenis);
+    const hpp = hppJenis(stokState, jenis);
     patchForm({ items: [...form.items, { jenis, jml: 1, hpp, harga: 0 }] });
   }
 
@@ -101,10 +128,10 @@ export default function PesananScreen() {
   }
 
   function pickAllJenis() {
-    const avail = allJenis.filter((j) => sisaStok(state, j) > 0);
+    const avail = allJenis.filter((j) => sisaStok(stokState, j) > 0);
     const items = avail.map((j) => {
       const existing = form.items.find((i) => i.jenis === j);
-      return existing ?? { jenis: j, jml: 1, hpp: hppJenis(state, j), harga: 0 };
+      return existing ?? { jenis: j, jml: 1, hpp: hppJenis(stokState, j), harga: 0 };
     });
     patchForm({ items });
   }
@@ -121,6 +148,21 @@ export default function PesananScreen() {
     setShowPenerima(false);
   }
 
+  function mulaiUbah(p: Pesanan) {
+    setEditId(p.id);
+    setForm(formFromPesanan(p));
+    setShowPenerima(false);
+    setShowForm(true);
+    setOpenDetail((d) => ({ ...d, [p.id]: false }));
+    toast.show("Mode ubah: form di atas sudah terisi");
+  }
+
+  function batalUbah() {
+    setEditId(null);
+    setForm(emptyForm());
+    setShowForm(false);
+  }
+
   function simpan() {
     const nama = form.nama.trim();
     const alamat = form.alamat.trim();
@@ -132,8 +174,9 @@ export default function PesananScreen() {
       toast.show("Lengkapi data bertanda * dan pesanan dulu");
       return;
     }
+    const lama = editId ? state.pesanan.find((x) => x.id === editId) : undefined;
     const p: Pesanan = {
-      id: uid(),
+      id: lama ? lama.id : uid(),
       tgl: form.tgl,
       nama,
       wa,
@@ -148,14 +191,20 @@ export default function PesananScreen() {
       karantina: karN,
       ops: opsN,
       codOngkir: form.codOngkir,
-      tipe: "PICKUP",
+      tipe: lama ? lama.tipe : "PICKUP",
       kurir: form.kurir,
       layanan: layananFor(form.kurir)[0] || form.layanan,
       berat: Number(form.berat) || 0,
-      status: "Dikirim",
+      status: lama ? lama.status : "Dikirim",
     };
-    setState((s) => ({ ...s, pesanan: [p, ...s.pesanan] }));
-    toast.show(`${tagItems(okItems)} tercatat di barang keluar`);
+    if (lama) {
+      setState((s) => ({ ...s, pesanan: s.pesanan.map((x) => (x.id === lama.id ? p : x)) }));
+      toast.show("Perubahan pesanan tersimpan");
+    } else {
+      setState((s) => ({ ...s, pesanan: [p, ...s.pesanan] }));
+      toast.show(`${tagItems(okItems)} tercatat di barang keluar`);
+    }
+    setEditId(null);
     setForm(emptyForm());
     setShowForm(false);
   }
@@ -171,6 +220,7 @@ export default function PesananScreen() {
 
   function hapus(id: string) {
     setState((s) => ({ ...s, pesanan: s.pesanan.filter((p) => p.id !== id) }));
+    if (editId === id) batalUbah();
     toast.show("Pesanan dihapus");
   }
 
@@ -201,14 +251,25 @@ export default function PesananScreen() {
   return (
     <Screen title="Pesanan" subtitle="Catat & kelola pesanan customer">
       <Button
-        title={showForm ? "Tutup form" : "+ Pesanan baru"}
+        title={editId ? "Batal ubah pesanan" : showForm ? "Tutup form" : "+ Pesanan baru"}
         icon={showForm ? "close-outline" : "add-outline"}
-        onPress={() => setShowForm((v) => !v)}
+        onPress={() => {
+          if (editId) batalUbah();
+          else setShowForm((v) => !v);
+        }}
         testID="pesanan-toggle-form"
       />
 
       {showForm && (
         <Card testID="pesanan-form">
+          {editId && (
+            <View style={styles.editBanner}>
+              <Ionicons name="create-outline" size={18} color={colors.brandPrimary} />
+              <Text style={styles.editBannerText} numberOfLines={2}>
+                Mengubah pesanan {form.nama || "-"} · {formatTgl(form.tgl)}
+              </Text>
+            </View>
+          )}
           {/* 1. Penerima */}
           <SectionTitle n={1} title="Info penerima" />
           <Button
@@ -270,11 +331,11 @@ export default function PesananScreen() {
             <Picker
               value=""
               placeholder="Pilih jenis atau paket"
-              options={[PAKET_KEY, ...allJenis.filter((j) => sisaStok(state, j) > 0)] as string[]}
+              options={[PAKET_KEY, ...allJenis.filter((j) => sisaStok(stokState, j) > 0 || form.items.some((i) => i.jenis === j))] as string[]}
               labelFor={(v) =>
                 v === PAKET_KEY
                   ? "Paket (pilih beberapa jenis)"
-                  : `${v} · sisa ${sisaStok(state, v)}`
+                  : `${v} · sisa ${sisaStok(stokState, v)}`
               }
               onChange={(v) => {
                 if (v === PAKET_KEY) patchForm({ paket: !form.paket });
@@ -296,7 +357,7 @@ export default function PesananScreen() {
                 </Pressable>
               </View>
               {allJenis.map((j) => {
-                const sisa = sisaStok(state, j);
+                const sisa = sisaStok(stokState, j);
                 const checked = !!form.items.find((i) => i.jenis === j);
                 const disabled = sisa <= 0 && !checked;
                 return (
@@ -319,7 +380,7 @@ export default function PesananScreen() {
           {form.items.length > 0 && (
             <View style={{ marginTop: spacing.sm, gap: spacing.sm }}>
               {form.items.map((it) => {
-                const sisa = sisaStok(state, it.jenis);
+                const sisa = sisaStok(stokState, it.jenis);
                 const over = it.jml > sisa;
                 return (
                   <View key={it.jenis} style={[styles.itemRow, over && { borderColor: colors.accent }]}>
@@ -424,7 +485,18 @@ export default function PesananScreen() {
           {overStok && <Text style={styles.warn}>Beberapa item melebihi sisa stok</Text>}
 
           <View style={{ height: spacing.md }} />
-          <Button title="Simpan pesanan" icon="save-outline" onPress={simpan} testID="simpan-pesanan" />
+          <Button
+            title={editId ? "Simpan perubahan" : "Simpan pesanan"}
+            icon="save-outline"
+            onPress={simpan}
+            testID="simpan-pesanan"
+          />
+          {editId && (
+            <>
+              <View style={{ height: spacing.sm }} />
+              <Button title="Batal" kind="alt" onPress={batalUbah} testID="batal-ubah-pesanan" />
+            </>
+          )}
         </Card>
       )}
 
@@ -523,6 +595,13 @@ export default function PesananScreen() {
                     codOngkir={p.codOngkir}
                   />
                 </DetailBlock>
+                <Button
+                  title="Ubah pesanan"
+                  kind="alt"
+                  icon="create-outline"
+                  onPress={() => mulaiUbah(p)}
+                  testID={`ubah-pesanan-${p.id}`}
+                />
                 <Pressable onPress={() => hapus(p.id)} style={{ alignSelf: "flex-start", marginTop: 4 }}>
                   <Text style={styles.linkDanger}>Hapus pesanan</Text>
                 </Pressable>
@@ -659,4 +738,16 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   detailTitle: { fontWeight: "700", color: colors.onSurface, marginBottom: 2 },
+  editBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.brandPrimary,
+    backgroundColor: colors.surfaceTertiary,
+  },
+  editBannerText: { flex: 1, color: colors.onSurface, fontWeight: "700", fontSize: 13 },
 });
